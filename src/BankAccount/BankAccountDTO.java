@@ -2,7 +2,7 @@ package BankAccount;
 
 public class BankAccountDTO {
 
-	public Object getBalance() {
+	public int getBalance() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
