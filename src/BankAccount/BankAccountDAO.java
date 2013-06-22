@@ -6,4 +6,8 @@ public class BankAccountDAO {
 		
 	}
 
+	public BankAccountDTO getAccount(String string) {
+		return null;
+	}
+
 }
