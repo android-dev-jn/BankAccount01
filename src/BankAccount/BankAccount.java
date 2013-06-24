@@ -6,7 +6,7 @@ public class BankAccount {
 
 	public static BankAccountDTO openAccount(String string) {
 		BankAccountDTO bankAccountDTO = new BankAccountDTO();
-		bankAccountDAO.save(string);
+		bankAccountDAO.save(bankAccountDTO);
 		return bankAccountDTO;
 	}
 
@@ -18,11 +18,12 @@ public class BankAccount {
 		return bankAccountDTO2;
 	}
 
-	public static void deposit(String string, double amount, String string2) {
-		BankAccountDTO bankAccountDTO = bankAccountDAO.getAccount(string);
-		BankAccountDTO bankAccountDTO2 = new BankAccountDTO();
-		bankAccountDTO2.setAccountNumber(string);
-		bankAccountDTO2.setBalance(0);
+	public static void deposit(BankAccountDTO bankAccountDTO, double amount,
+			String string2) {
+
+		bankAccountDTO.setBalance(bankAccountDTO.getBalance() + amount);
+		bankAccountDTO.setLastDeposit(amount);
+		bankAccountDAO.save(bankAccountDTO);
 	}
 
 }
