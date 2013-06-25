@@ -4,8 +4,8 @@ public class BankAccount {
 
 	public static BankAccountDAO bankAccountDAO;
 
-	public static BankAccountDTO openAccount(String string) {
-		BankAccountDTO bankAccountDTO = new BankAccountDTO();
+	public static BankAccountDTO openAccount(String accountNumber) {
+		BankAccountDTO bankAccountDTO = new BankAccountDTO(accountNumber);
 		bankAccountDAO.save(bankAccountDTO);
 		return bankAccountDTO;
 	}

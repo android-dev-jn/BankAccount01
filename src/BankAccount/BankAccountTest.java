@@ -31,21 +31,15 @@ public class BankAccountTest {
 				.forClass(BankAccountDTO.class);
 		verify(mockBankAccountDAO, times(1)).save(argumentCaptor.capture());
 
-		assertEquals(bankAccountDTO, argumentCaptor.getValue());
-		assertTrue(0 == bankAccountDTO.getBalance());
+		assertEquals("123456789", argumentCaptor.getValue().getAccountNumber());
+		assertTrue(0 == argumentCaptor.getValue().getBalance());
 	}
 
 	@Test
 	public void testGetAccount() {
 		String accountNumber = "01234567890";
-		BankAccountDTO bankAccount = BankAccount.openAccount(accountNumber);
-		when(mockBankAccountDAO.getAccount(bankAccount.getAccountNumber()))
-				.thenReturn(bankAccount);
-		BankAccountDTO bankActual = BankAccount.getAccount(bankAccount
-				.getAccountNumber());
-		verify(mockBankAccountDAO, times(1)).getAccount(
-				bankAccount.getAccountNumber());
-		assertEquals(bankAccount, bankActual);
+		BankAccountDTO bankAccountDTO = BankAccount.getAccount(accountNumber);
+		verify(mockBankAccountDAO, times(1)).getAccount(accountNumber);
 	}
 
 	@Test
@@ -53,14 +47,17 @@ public class BankAccountTest {
 		String accountNumber = "1234567890";
 		double amount = 100, DELTA = 1e-2;
 		String description = "Bonus";
-		BankAccountDTO bankAccount = BankAccount.openAccount(accountNumber);
+		
+		BankAccountDTO bankAccount = new BankAccountDTO(accountNumber, 50);
+		when(mockBankAccountDAO.getAccount(bankAccount.getAccountNumber()))
+		.thenReturn(bankAccount);
+		BankAccount.deposit(accountNumber, amount, description);
+		
 		ArgumentCaptor<BankAccountDTO> argument = ArgumentCaptor
 				.forClass(BankAccountDTO.class);
-		when(mockBankAccountDAO.getAccount(bankAccount.getAccountNumber()))
-				.thenReturn(bankAccount);
-		BankAccount.deposit(accountNumber, amount, description);
-		verify(mockBankAccountDAO, times(2)).save(argument.capture());
-		assertEquals(amount, argument.getValue().getBalance(), DELTA);
+		verify(mockBankAccountDAO, times(1)).save(argument.capture());
+		System.out.println("balance = " + argument.getValue().getBalance());
+		assertEquals(150, argument.getValue().getBalance(), DELTA);
 		assertEquals(accountNumber, argument.getValue().getAccountNumber());
 	}
 
