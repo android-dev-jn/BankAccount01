@@ -5,8 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import java.util.Date;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,42 +37,31 @@ public class BankAccountTest {
 
 	@Test
 	public void testGetAccount() {
-		BankAccountDTO bankAccountDTO = BankAccount.openAccount("1234567890");
-		BankAccountDTO bankAccountDTO2 = BankAccount.getAccount("1234567890");
-		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor
-				.forClass(String.class);
-		assertEquals(bankAccountDTO.getAccountNumber(),
-				bankAccountDTO2.getAccountNumber());
-		assertEquals(bankAccountDTO.getBalance(), bankAccountDTO2.getBalance());
+		String accountNumber = "01234567890";
+		BankAccountDTO bankAccount = BankAccount.openAccount(accountNumber);
+		when(mockBankAccountDAO.getAccount(bankAccount.getAccountNumber()))
+				.thenReturn(bankAccount);
+		BankAccountDTO bankActual = BankAccount.getAccount(bankAccount
+				.getAccountNumber());
 		verify(mockBankAccountDAO, times(1)).getAccount(
-				argumentCaptor.capture());
-		assertEquals("1234567890", argumentCaptor.getValue());
+				bankAccount.getAccountNumber());
+		assertEquals(bankAccount, bankActual);
 	}
 
 	@Test
-	public void testDepositAmount() {
-		double amount = 100;
-		double DELTA = 1e-2;
-		BankAccountDTO bankAccountDTO = BankAccount.openAccount("1234567890");
-		BankAccount.deposit(bankAccountDTO, amount, "Bonus");
-
+	public void testDepositTransaction() {
+		String accountNumber = "1234567890";
+		double amount = 100, DELTA = 1e-2;
+		String description = "Bonus";
+		BankAccountDTO bankAccount = BankAccount.openAccount(accountNumber);
 		ArgumentCaptor<BankAccountDTO> argument = ArgumentCaptor
 				.forClass(BankAccountDTO.class);
+		when(mockBankAccountDAO.getAccount(bankAccount.getAccountNumber()))
+				.thenReturn(bankAccount);
+		BankAccount.deposit(accountNumber, amount, description);
 		verify(mockBankAccountDAO, times(2)).save(argument.capture());
-		assertEquals(amount, argument.getValue().getLastDeposit(), DELTA);
+		assertEquals(amount, argument.getValue().getBalance(), DELTA);
+		assertEquals(accountNumber, argument.getValue().getAccountNumber());
 	}
 
-	@Test
-	public void testDepositLog() {
-		double amount = 100;
-		double DELTA = 1e-2;
-		Date now = new Date();
-		BankAccountDTO bankAccountDTO = BankAccount.openAccount("1234567890");
-		BankAccount.deposit(bankAccountDTO, amount, "Bonus");
-
-		ArgumentCaptor<BankAccountDTO> argument = ArgumentCaptor
-				.forClass(BankAccountDTO.class);
-		verify(mockBankAccountDAO, times(2)).save(argument.capture());
-		assertEquals(now, argument.getValue().getTimeStamp());
-	}
 }

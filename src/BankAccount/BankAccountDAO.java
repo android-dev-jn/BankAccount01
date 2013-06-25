@@ -2,8 +2,8 @@ package BankAccount;
 
 public class BankAccountDAO {
 
-	public void save(BankAccountDTO bankAcountDTO) {
-		
+	public BankAccountDTO save(BankAccountDTO bankAcountDTO) {
+		return null;
 	}
 
 	public BankAccountDTO getAccount(String string) {

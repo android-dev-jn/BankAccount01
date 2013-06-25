@@ -11,18 +11,14 @@ public class BankAccount {
 	}
 
 	public static BankAccountDTO getAccount(String string) {
-		BankAccountDTO bankAccountDTO = bankAccountDAO.getAccount(string);
-		BankAccountDTO bankAccountDTO2 = new BankAccountDTO();
-		bankAccountDTO2.setAccountNumber(string);
-		bankAccountDTO2.setBalance(0);
-		return bankAccountDTO2;
+		return bankAccountDAO.getAccount(string);
 	}
 
-	public static void deposit(BankAccountDTO bankAccountDTO, double amount,
-			String string2) {
-
+	public static void deposit(String accountNumber, double amount,
+			String description) {
+		BankAccountDTO bankAccountDTO = bankAccountDAO.getAccount(accountNumber);
 		bankAccountDTO.setBalance(bankAccountDTO.getBalance() + amount);
-		bankAccountDTO.setLastDeposit(amount);
+		bankAccountDTO.setDescription(description);
 		bankAccountDAO.save(bankAccountDTO);
 	}
 
