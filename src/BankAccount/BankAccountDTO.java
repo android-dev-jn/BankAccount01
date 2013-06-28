@@ -6,6 +6,13 @@ public class BankAccountDTO {
 	private String description;
 	private double balance;
 	private double lastDeposit;
+	private Long timestamp;
+
+	public BankAccountDTO(String accountNumber, Long timestamp) {
+		super();
+		this.accountNumber = accountNumber;
+		this.timestamp = timestamp;
+	}
 
 	public BankAccountDTO(double lastDeposit) {
 		this.lastDeposit = lastDeposit;
@@ -49,8 +56,12 @@ public class BankAccountDTO {
 		this.lastDeposit = lastDeposit;
 	}
 
-	public double getTimeStamp() {
-		return 0;
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public String getDescription() {

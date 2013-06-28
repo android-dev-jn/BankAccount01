@@ -1,7 +1,7 @@
 package BankAccount;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -26,6 +26,7 @@ public class BankAccountTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		reset(mockBankAccountDAO);
+		reset(mockTransactionDAO);
 		reset(mockCalendar);
 		BankAccount.bankAccountDAO = mockBankAccountDAO;
 		BankAccount.transactionDAO = mockTransactionDAO;
@@ -156,6 +157,32 @@ public class BankAccountTest {
 				.forClass(String.class);
 		verify(mockTransactionDAO, times(1)).getTransactions(accountNumber,
 				startTime, stopTime);
+	}
+
+	// 9
+	@Test
+	public void testGetTransactionsOccurredWithANumber() {
+		String accountNumber = "1234567890";
+		int n = 10;
+		BankAccount.getTheLastNTransactions(accountNumber, n);
+		verify(mockTransactionDAO, times(1)).getTheLastNTransactions(
+				accountNumber, n);
+	}
+
+	// 10
+	@Test
+	public void testOpenAccountHasTimeStamp() {
+		String accountNumber = "1234567890";		
+		Long timestamp = System.currentTimeMillis();
+
+		when(mockCalendar.getTimeInMillis()).thenReturn(timestamp);
+		BankAccount.openAccount(accountNumber);
+		ArgumentCaptor<BankAccountDTO> openAccount = ArgumentCaptor
+				.forClass(BankAccountDTO.class);
+
+		verify(mockBankAccountDAO, times(1)).save(openAccount.capture());
+		assertTrue(openAccount.getValue().getTimestamp() != null);
+		assertEquals(timestamp, openAccount.getValue().getTimestamp());
 	}
 
 }

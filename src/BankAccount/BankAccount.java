@@ -9,7 +9,10 @@ public class BankAccount {
 	public static Calendar calendar;
 
 	public static BankAccountDTO openAccount(String accountNumber) {
-		BankAccountDTO bankAccountDTO = new BankAccountDTO(accountNumber);
+		Long timestamp = new Long(calendar.getTimeInMillis());
+		System.out.println("timestamp = " + timestamp);
+		BankAccountDTO bankAccountDTO = new BankAccountDTO(accountNumber,
+				timestamp);
 		bankAccountDAO.save(bankAccountDTO);
 		return bankAccountDTO;
 	}
@@ -60,6 +63,10 @@ public class BankAccount {
 	public static void getTransactions(String accountNumber, long startTime,
 			long stopTime) {
 		transactionDAO.getTransactions(accountNumber, startTime, stopTime);
+	}
+
+	public static void getTheLastNTransactions(String accountNumber, int n) {
+		transactionDAO.getTheLastNTransactions(accountNumber, n);
 	}
 
 }
